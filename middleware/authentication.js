@@ -9,7 +9,7 @@ const authentication = (req, res, next) => {
         return res.status(403).json({ message: "Invalid token" });
       }
       req.user = user;
-      next(); // Add this line
+      next();
     });
   } else {
     res.status(401).json({ message: "Unauthorized" });
