@@ -1,8 +1,14 @@
 const multer = require("multer");
+const fs = require("fs");
+
+const imgUploadDir = "img-upload";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "image-upload/");
+    if (!fs.existsSync(imgUploadDir)) {
+      fs.mkdirSync(imgUploadDir);
+    }
+    cb(null, imgUploadDir);
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -28,7 +34,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
-  limits: { fileSize: 2 * 1024 * 1024 }, // Limit 2 MB
+  limits: { fileSize: 2 * 1024 * 1024 },
 });
 
 module.exports = { upload };

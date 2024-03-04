@@ -1,10 +1,12 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const { logger } = require("./middleware/log");
 const { authentication } = require("./middleware/authentication");
-const { upload } = require("./middleware/multer");
 
 const { signinRoute } = require("./route/signin-route");
 const { loginRoute } = require("./route/login-route");
+const { trackerRoute } = require("./route/tracker-route");
+const { reviewRoute } = require("./route/review-route");
 
 const app = express();
 const cors = require("cors");
@@ -14,13 +16,13 @@ app.use(logger);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.post("/upload", upload.single("file"), (req, res) => {
-  res.json({ file: req.file });
-});
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use("/signin", signinRoute);
 app.use("/login", loginRoute);
+app.use("/tracker", trackerRoute);
+app.use("/review", reviewRoute);
 
 app.use(authentication);
 
@@ -30,5 +32,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(port, () => {
-  console.log(`server is running on http://localhost:${port}`);
+  console.log(`Server is running on http://localhost:${port}`);
 });
